@@ -9,7 +9,6 @@ var cors = require("cors");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const port = process.env.PORT || 5000;
-const publicPath = path.join(__dirname, "..", "public");
 
 require("dotenv").config();
 
@@ -28,7 +27,7 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(publicPath));
+app.use(express.static("public"));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
