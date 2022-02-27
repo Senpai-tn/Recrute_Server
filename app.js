@@ -8,7 +8,7 @@ var mongoose = require("mongoose");
 var cors = require("cors");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 const publicPath = path.join(__dirname, "..", "public");
 
 require("dotenv").config();
