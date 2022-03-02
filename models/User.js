@@ -1,6 +1,5 @@
 const { default: mongoose } = require("mongoose");
 const Schema = mongoose.Schema;
-const bcrypt = require("bcrypt");
 
 const UserSchema = new Schema({
   firstName: { type: String, required: true },
@@ -12,6 +11,8 @@ const UserSchema = new Schema({
     enum: ["ADMIN", "SUPER_ADMIN", "HR", "CANDIDATE"],
     required: true,
   },
+  offers: { type: Array, default: [] },
+  likes: { type: Array, default: [] },
   createdAt: { type: Date, default: Date.now },
   deletedAt: { type: Date, default: null },
 });

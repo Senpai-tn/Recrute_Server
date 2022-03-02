@@ -6,13 +6,12 @@ var router = express.Router();
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  res.send("Home");
+  res.send("index route");
 });
 
 router.post("/register", async (req, res) => {
   var user = new User(req.body.user);
-  const hashed = await bcrypt.hash(user.password, 10);
-  user.password = hashed;
+  user.password = await bcrypt.hash(user.password, 10);
   var savedUser = await user.save();
   res.send(savedUser);
 });

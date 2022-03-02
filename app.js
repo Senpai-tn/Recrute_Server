@@ -8,6 +8,8 @@ var mongoose = require("mongoose");
 var cors = require("cors");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+var offersRouter = require("./routes/offers");
+var questionsRouter = require("./routes/questions");
 const port = process.env.PORT || 5000;
 
 require("dotenv").config();
@@ -30,6 +32,8 @@ app.use(cookieParser());
 app.use(express.static("public"));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/offers", offersRouter);
+app.use("/questions", questionsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
