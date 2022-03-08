@@ -56,7 +56,10 @@ router.post("/", async (req, res) => {
     var savedUser = await user.save();
     var oldOffer = await Offer.findById(req.body.idOffer);
     console.log(oldOffer);
-    oldOffer.candidates = [...oldOffer.candidates, savedUser];
+    oldOffer.candidates = [
+      ...oldOffer.candidates,
+      { user: savedUser, exam: savedExam },
+    ];
 
     await oldOffer.save(async (er, savedOffre) => {
       if (er != null) {
