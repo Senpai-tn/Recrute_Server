@@ -18,7 +18,7 @@ router.post("/", async (req, res) => {
     user.offers = [...user.offers, savedOffer];
     await user.save((e, savedUser) => {
       if (e != null) {
-        res.send(error);
+        res.send(e);
       }
       res.send({ user: savedUser, offer: savedOffer });
     });

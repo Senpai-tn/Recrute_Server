@@ -13,6 +13,7 @@ const UserSchema = new Schema({
   },
   offers: { type: Array, default: [] },
   likes: { type: Array, default: [] },
+  exams: { type: Array, default: [] },
   createdAt: { type: Date, default: Date.now },
   deletedAt: { type: Date, default: null },
 });
