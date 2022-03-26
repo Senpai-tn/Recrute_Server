@@ -11,6 +11,7 @@ var usersRouter = require("./routes/users");
 var offersRouter = require("./routes/offers");
 var questionsRouter = require("./routes/questions");
 const adminRouter = require("./routes/admin");
+const rhRouter = require("./routes/rh");
 const port = process.env.PORT || 5000;
 
 require("dotenv").config();
@@ -36,6 +37,7 @@ app.use("/users", usersRouter);
 app.use("/offers", offersRouter);
 app.use("/questions", questionsRouter);
 app.use("/admin", adminRouter);
+app.use("/rh", rhRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

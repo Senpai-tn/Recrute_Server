@@ -12,8 +12,11 @@ router.get("/", function (req, res, next) {
 router.post("/register", async (req, res) => {
   var user = new User(req.body.user);
   user.password = await bcrypt.hash(user.password, 10);
-  var savedUser = await user.save();
-  res.send(savedUser);
+  user.save((e, savedUser) => {
+    if (e != null) {
+      res.send(e);
+    } else res.send(savedUser);
+  });
 });
 
 router.post("/login", async (req, res) => {

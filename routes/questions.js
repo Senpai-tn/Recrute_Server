@@ -17,7 +17,6 @@ router.get("/:type", async (req, res) => {
   }
   var questions = [];
   array.map((value) => {
-    console.log(jsonData[value - 1].id);
     questions.push({
       id: jsonData[value - 1].id,
       question: jsonData[value - 1].question,
@@ -33,7 +32,6 @@ router.post("/", async (req, res) => {
   var allQuestions = require("../public/questions/" + req.body.type + ".json");
   var questions = [];
   var finalResult = 0;
-
   const percent = 100 / req.body.array.length;
   req.body.array.map((i) => {
     questions.push(allQuestions[i - 1]);
@@ -52,15 +50,12 @@ router.post("/", async (req, res) => {
     }
     var user = await User.findById(req.body.idUser);
     user.exams = [...user.exams, savedExam];
-
     var savedUser = await user.save();
     var oldOffer = await Offer.findById(req.body.idOffer);
-    console.log(oldOffer);
     oldOffer.candidates = [
       ...oldOffer.candidates,
       { user: savedUser, exam: savedExam },
     ];
-
     await oldOffer.save(async (er, savedOffre) => {
       if (er != null) {
         res.send(er);
