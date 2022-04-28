@@ -17,7 +17,8 @@ const port = process.env.PORT || 5000;
 require("dotenv").config();
 
 var app = express();
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "50mb" }));
 app.use(cors());
 // view engine setup
 

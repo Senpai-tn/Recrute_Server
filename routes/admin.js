@@ -1,8 +1,9 @@
 const express = require("express");
+const { sendMail } = require("../Mailer");
 const Offer = require("../models/Offer");
-const nodemailer = require("nodemailer");
 const router = express.Router();
 const User = require("../models/User");
+const { welcomeEmail, responseOffer } = require("../public/Mail/accepted");
 
 router.get("/", async (req, res) => {
   const monthsArray = [
@@ -66,33 +67,94 @@ router.get("/", async (req, res) => {
     },
   ]);
 
-  let transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    requireTLS: true,
-    auth: {
-      user: "recruteemail@gmail.com",
-      pass: "Recrute2022",
-    },
-  });
-
-  let mailOptions = {
-    from: "recruteOffer@gmail.com",
-    to: "recruteemail@gmail.com,khaledsahli36@gmail.com",
-    subject: `Test ${new Date()}`,
-    text: "Hello World!",
-  };
-
-  // transporter.sendMail(mailOptions, (error, info) => {
-  //   if (error) {
-  //     return console.log(error.message);
-  //   }
-  //   console.log("success");
-  // });
-
   var users = await User.find();
   res.send({ stat: stat, users: users });
+});
+
+router.put("/setrole", async (req, res) => {
+  console.log(req.body);
+  const user = await User.findById(req.body.id);
+  user.role = req.body.role;
+  user.save(async (e, savedUser) => {
+    if (e != null) {
+      res.send(e);
+    }
+    var users = await User.find();
+    res.send(users);
+  });
+});
+
+router.delete("/delete", async (req, res) => {
+  if (Array.isArray(req.body.cible)) {
+    console.log(req.body.cible.length);
+    var users = [];
+    await Promise.all(
+      req.body.cible.map(async (item) => {
+        var user = await User.findById(item.id);
+        user.deletedAt = new Date();
+        users.push(await user.save());
+      }),
+    );
+    var allUsers = await User.find();
+    res.send(allUsers);
+  } else {
+    const user = await User.findById(req.body.cible.id);
+    user.deletedAt = new Date();
+    user.save(async (e, savedUser) => {
+      if (e != null) {
+        res.send(e);
+      } else {
+        var users = await User.find();
+        res.send(users);
+      }
+    });
+  }
+});
+
+router.get("/restore", async (req, res) => {
+  var users = await User.find();
+
+  await Promise.all(
+    users.map(async (item) => {
+      var user = await User.findById(item.id);
+      user.deletedAt = null;
+      users.push(await user.save());
+    }),
+  );
+  res.send("restored");
+});
+
+router.put("/offer", async (req, res) => {
+  var offer = await Offer.findById(req.body.id);
+  offer.state = req.body.state;
+  req.body.state != "DRAFT"
+    ? offer.save((e, savedOffer) => {
+        if (e != null) {
+          res.send(e);
+        } else {
+          console.log(offer.RH.email);
+
+          sendMail(
+            offer.RH.email,
+            "Response from admin about your offer",
+            responseOffer(offer),
+          );
+          res.send(savedOffer);
+        }
+      })
+    : res.send("not authorized");
+});
+
+router.put("/checkOffer", async (req, res) => {
+  var offer = await Offer.findById(req.body.id);
+  offer.state = req.body.state;
+  offer.save((error, savedOffer) => {
+    if (error != null) {
+      res.send(error);
+    } else {
+      res.send(savedOffer);
+    }
+  });
 });
 
 module.exports = router;
