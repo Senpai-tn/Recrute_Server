@@ -7,6 +7,8 @@ const examSchema = new Schema({
   questions: { type: Array, required: true },
   answers: { type: Array, default: [] },
   result: { type: Number, default: 0 },
+  idUser: String,
+  idOffer: String,
 });
 
 const Exam = mongoose.model("exams", examSchema);

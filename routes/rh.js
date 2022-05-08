@@ -4,14 +4,14 @@ const User = require("../models/User");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  res.send("RH");
+  var offers = await Offer.find({});
+  res.send(offers);
 });
 
 router.delete("/", async (req, res) => {
   var offer = await Offer.findById(req.body.idOffer);
   offer.deletedAt = new Date();
   var user = await User.findById(req.body.idUser);
-
   offer.save(async (e, savedOffer) => {
     if (e != null) {
       res.send(e);
@@ -27,4 +27,12 @@ router.delete("/", async (req, res) => {
   });
 });
 
+router.get("/:id", async (req, res) => {
+  var rh = await User.findById(req.params.id);
+
+  var offers = await Offer.find({ RH: req.params.id });
+
+  console.log(offers);
+  res.send({ rh: rh, offers: offers });
+});
 module.exports = router;

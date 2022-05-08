@@ -8,8 +8,8 @@ const { createdOffer } = require("../public/Mail/accepted");
 /* GET users listing. */
 router.get("/", async (req, res) => {
   var offers = await Offer.find({
-    //deletedAt: null,
-    //state: { $nin: ["DRAFT", "SENT", "REFUSED"] },
+    deletedAt: null,
+    state: { $nin: ["DRAFT", "SENT", "REFUSED"] }, // not in
   });
   res.send(offers);
 });
@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
       if (error != null) {
         res.send(error);
       } else {
-        user.offers = [...user.offers, savedOffer];
+        user.offers = [...user.offers, savedOffer._id];
         await user.save(async (userError, savedUser) => {
           if (userError != null) {
             console.log(userError);
@@ -51,12 +51,15 @@ router.get("/get/:id", async (req, res) => {
 
 router.put("/", async (req, res) => {
   var offer = await Offer.findById(req.body.id);
-  offer.state = req.body.state;
+  var rh = await User.findById(offer.RH);
+  req.body.state != null ? (offer.state = req.body.state) : null;
+  req.body.title != null ? (offer.title = req.body.title) : null;
+  req.body.type != null ? (offer.type = req.body.type) : null;
   offer.save((error, savedOffer) => {
     if (error != null) {
       res.send(error);
     } else {
-      res.send(savedOffer);
+      res.send({ rh: rh, offer: savedOffer });
     }
   });
 });

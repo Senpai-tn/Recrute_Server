@@ -44,6 +44,8 @@ router.post("/", async (req, res) => {
   exam.questions = questions;
   exam.answers = answers;
   exam.result = finalResult * percent;
+  exam.idUser = req.body.idUser;
+  exam.idOffer = req.body.idOffer;
   await exam.save(async (e, savedExam) => {
     if (e != null) {
       res.send(e);
@@ -60,7 +62,7 @@ router.post("/", async (req, res) => {
       if (er != null) {
         res.send(er);
       }
-      res.send(savedOffre);
+      res.send({ offer: savedOffre, exam: savedExam });
     });
   });
 });

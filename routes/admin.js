@@ -113,12 +113,21 @@ router.delete("/delete", async (req, res) => {
 
 router.get("/restore", async (req, res) => {
   var users = await User.find();
+  var offers = await Offer.find();
 
   await Promise.all(
     users.map(async (item) => {
       var user = await User.findById(item.id);
       user.deletedAt = null;
       users.push(await user.save());
+    }),
+  );
+
+  await Promise.all(
+    offers.map(async (item) => {
+      var offer = await Offer.findById(item.id);
+      offer.deletedAt = null;
+      offers.push(await offer.save());
     }),
   );
   res.send("restored");
@@ -147,14 +156,28 @@ router.put("/offer", async (req, res) => {
 
 router.put("/checkOffer", async (req, res) => {
   var offer = await Offer.findById(req.body.id);
+  var rh = await User.findById(offer.RH);
   offer.state = req.body.state;
   offer.save((error, savedOffer) => {
     if (error != null) {
       res.send(error);
     } else {
-      res.send(savedOffer);
+      var index = rh.offers.findIndex((o) => o._id == req.body.id);
+      rh.offers[index] = savedOffer;
+      rh.save((e, savedRH) => {
+        if (e != null) {
+          res.send(e);
+        } else {
+          res.send(savedOffer);
+        }
+      });
     }
   });
+});
+
+router.get("/offers", async (req, res) => {
+  var offers = await Offer.find({});
+  res.send(offers);
 });
 
 module.exports = router;

@@ -13,7 +13,9 @@ const OfferSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
   deletedAt: { type: Date, default: null },
   candidates: { type: Array, default: [] },
+  liked: { type: Array, default: [] },
   RH: { type: Object, default: {} },
+  min: { type: Number, default: 0 },
 });
 
 const Offer = mongoose.model("offers", OfferSchema);
